@@ -1,5 +1,5 @@
 FROM ubuntu:xenial
-ENV TENGINE_VER 2.2.3
+ENV TENGINE_VER 2.3.0
 RUN sed -i "/^# deb-src/ s/^# //" /etc/apt/sources.list; \
     apt-get update ; \
     apt-get dist-upgrade -y ; \
