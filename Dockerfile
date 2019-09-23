@@ -27,17 +27,17 @@ RUN yum update -y ; \
       --with-debug --with-threads  --with-http_v2_module --with-stream \
       --add-module=./modules/ngx_http_proxy_connect_module \
       --with-cc-opt=" -O2 " --with-jemalloc;\
-    make ; make install; \
-    cd ..;\
-    rm -rf tengine-*; \
-    unlink ${TENGINE_VER}.tar.gz;
+    make ; make install; 
 
 FROM centos
+COPY --from=builder /usr/local/nginx /usr/local/
+
 
 RUN yum install -y epel-release;\
     yum install -y  gd gperftools-libs libX11 libX11-common  libXau         libXpm  libjpeg-turbo libxcb     libxslt openssl GeoIP jemalloc perl-ExtUtils-Embed; \
     useradd -ms /bin/bash www; \
-    yum clean all
+    yum clean all;\
+    mkdir -p /var/log/nginx
 
 
 
