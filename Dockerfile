@@ -31,7 +31,7 @@ RUN yum update -y ; \
 
 FROM centos
 COPY --from=builder /usr/local/nginx/ /usr/local/nginx/
-
+COPY --from=builder /usr/local/lib64/perl5/ /usr/local/lib64/perl5/
 
 RUN yum install -y epel-release;\
     yum install -y  gd gperftools-libs libX11 libX11-common  libXau         libXpm  libjpeg-turbo libxcb     libxslt openssl GeoIP jemalloc perl-ExtUtils-Embed; \
