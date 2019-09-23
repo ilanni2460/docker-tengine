@@ -1,13 +1,12 @@
-FROM centos
+FROM centos AS builder
 ENV TENGINE_VER 2.3.2
-RUN yum update -y; 
-RUN    yum install -y wget make m4 gcc-c++  gperftools-devel     autoconf automake lua-devel  pcre-devel  libxml2-devel gd-devel perl-ExtUtils-Embed libxslt-devel GeoIP-devel openssl-devel; 
-RUN   yum install   -y epel-release
-RUN yum install -y jemalloc-devel
-RUN    wget https://github.com/alibaba/tengine/archive/${TENGINE_VER}.tar.gz; \
+RUN yum update -y ; \
+    yum install -y epel-release; \
+    yum install -y wget make m4 gcc-c++  gperftools-devel     autoconf automake lua-devel  pcre-devel  libxml2-devel gd-devel perl-ExtUtils-Embed libxslt-devel GeoIP-devel openssl-devel jemalloc-devel; \
+   wget https://github.com/alibaba/tengine/archive/${TENGINE_VER}.tar.gz; \
     tar zxvf ${TENGINE_VER}.tar.gz ;\
-    cd tengine-${TENGINE_VER}; 
-RUN    ./configure --prefix=/usr/local/nginx --sbin-path=/usr/local/nginx/sbin/nginx \
+    cd tengine-${TENGINE_VER}; \
+   ./configure --prefix=/usr/local/nginx --sbin-path=/usr/local/nginx/sbin/nginx \
       --conf-path=/usr/local/nginx/etc/nginx.conf --error-log-path=/var/log/nginx/error.log \
       --http-log-path=/var/log/nginx/access.log \
       --http-client-body-temp-path=/tmp/nginx/client_body \
@@ -34,6 +33,14 @@ RUN    ./configure --prefix=/usr/local/nginx --sbin-path=/usr/local/nginx/sbin/n
     cd ..;\
     rm -rf tengine-*; \
     unlink ${TENGINE_VER}.tar.gz;
+
+FROM centos
+
+RUN yum install -y epel-release;\
+    yum install -y  gd gperftools-libs libX11 libX11-common  libXau         libXpm  libjpeg-turbo libxcb     libxslt openssl GeoIP jemalloc ;
+
+COPY --from=builder /usr/local/nginx /usr/local/
+
     
 ENV TERM xterm
 VOLUME ["/tmp/nginx"]
