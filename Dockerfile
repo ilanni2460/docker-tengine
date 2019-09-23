@@ -1,14 +1,13 @@
-FROM ubuntu:xenial
+FROM centos
 ENV TENGINE_VER 2.3.2
-RUN sed -i "/^# deb-src/ s/^# //" /etc/apt/sources.list; \
-    apt-get update ; \
-    apt-get dist-upgrade -y ; \
-    apt-get install -y wget libgoogle-perftools-dev vim-tiny libjemalloc-dev; \
-    apt-get build-dep nginx -y;\
-    wget https://github.com/alibaba/tengine/archive/${TENGINE_VER}.tar.gz; \
+RUN yum update -y; 
+RUN    yum install -y wget make m4 gcc-c++  gperftools-devel     autoconf automake lua-devel  pcre-devel  libxml2-devel gd-devel perl-ExtUtils-Embed libxslt-devel GeoIP-devel openssl-devel; 
+RUN   yum install   -y epel-release
+RUN yum install -y jemalloc-devel
+RUN    wget https://github.com/alibaba/tengine/archive/${TENGINE_VER}.tar.gz; \
     tar zxvf ${TENGINE_VER}.tar.gz ;\
-    cd tengine-${TENGINE_VER}; \
-    ./configure --prefix=/usr/local/nginx --sbin-path=/usr/local/nginx/sbin/nginx \
+    cd tengine-${TENGINE_VER}; 
+RUN    ./configure --prefix=/usr/local/nginx --sbin-path=/usr/local/nginx/sbin/nginx \
       --conf-path=/usr/local/nginx/etc/nginx.conf --error-log-path=/var/log/nginx/error.log \
       --http-log-path=/var/log/nginx/access.log \
       --http-client-body-temp-path=/tmp/nginx/client_body \
@@ -45,7 +44,4 @@ WORKDIR /root
 
 COPY nginx.conf /usr/local/nginx/etc/nginx.conf
 CMD ["/usr/local/nginx/sbin/nginx", "-g", "daemon off;"]
-
-
-
 
