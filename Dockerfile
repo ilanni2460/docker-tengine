@@ -30,7 +30,7 @@ RUN yum update -y ; \
     make ; make install; 
 
 FROM centos
-COPY --from=builder /usr/local/nginx /usr/local/
+COPY --from=builder /usr/local/nginx/ /usr/local/nginx/
 
 
 RUN yum install -y epel-release;\
