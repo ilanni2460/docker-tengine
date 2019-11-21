@@ -28,7 +28,8 @@ RUN sed -i "/^# deb-src/ s/^# //" /etc/apt/sources.list; \
       --with-mail_ssl_module --with-pcre --with-pcre-jit --with-google_perftools_module \
       --with-debug --with-threads  --with-http_v2_module --with-stream \
       --add-module=./modules/ngx_http_proxy_connect_module \
-      --with-cc-opt=" -O2 " --with-jemalloc;\
+      --with-cc-opt=" -O2 -static -static-libgcc" \
+            --with-ld-opt="-static" --with-cpu-opt=generic --with-jemalloc;\
     make ; make install; \
     useradd -ms /bin/bash  www;\
     rm -rf /var/lib/apt/lists/*;\
