@@ -18,8 +18,8 @@ RUN cat /etc/apt/sources.list; \
     apt-get update ; \
     apt-get dist-upgrade -y ; \
     apt-get install -y gcc make g++ wget libgoogle-perftools-dev vim-tiny libjemalloc-dev libxml2 libxml2-dev libxslt-dev libgd-dev; \
-    apt-get build-dep nginx-full -y; 
-
+    apt-get build-dep nginx-full -y;  \
+    apt-get build-dep libnginx-mod-http-image-filter -y;
 RUN   cd /opt/tengine-2.3.3; \
       ./configure --prefix=/usr/local/nginx --sbin-path=/usr/local/nginx/sbin/nginx \
       --conf-path=/usr/local/nginx/etc/nginx.conf --error-log-path=/var/log/nginx/error.log \
