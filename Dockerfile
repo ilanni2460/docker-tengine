@@ -18,7 +18,7 @@ RUN echo "deb-src http://deb.debian.org/debian stretch main\n" >> /etc/apt/sourc
 RUN cat /etc/apt/sources.list; \
     apt-get update ; \
     apt-get dist-upgrade -y ; \
-    apt-get install -y gcc make g++ wget libgoogle-perftools-dev vim-tiny libjemalloc-dev libxml2 libxml2-dev libxslt-dev; \
+    apt-get install -y gcc make g++ wget libgoogle-perftools-dev vim-tiny libjemalloc-dev libxml2 libxml2-dev libxslt-dev libgd-dev; \
     apt-get build-dep nginx-full -y; \
     apt-get build-dep libnginx-mod-http-image-filter -y ;
 
