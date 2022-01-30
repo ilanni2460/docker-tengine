@@ -1,4 +1,4 @@
-FROM debian:stretch as builer
+FROM ubuntu:xenail as builer
 ENV TENGINE_VER 2.3.3
 
 
@@ -12,15 +12,13 @@ RUN    cd /opt; \
     cd tengine-${TENGINE_VER}; \
     ls -al 
 
-RUN echo "deb-src http://deb.debian.org/debian stretch main\n" >> /etc/apt/sources.list
-
+RUN sed -i "/^# deb-src/ s/^# //" /etc/apt/sources.list
 
 RUN cat /etc/apt/sources.list; \
     apt-get update ; \
     apt-get dist-upgrade -y ; \
     apt-get install -y gcc make g++ wget libgoogle-perftools-dev vim-tiny libjemalloc-dev libxml2 libxml2-dev libxslt-dev libgd-dev; \
-    apt-get build-dep nginx-full -y; \
-    apt-get build-dep libnginx-mod-http-image-filter -y ;
+    apt-get build-dep nginx-full -y; 
 
 RUN   cd /opt/tengine-2.3.3; \
       ./configure --prefix=/usr/local/nginx --sbin-path=/usr/local/nginx/sbin/nginx \
@@ -51,7 +49,7 @@ RUN   cd /opt/tengine-2.3.3; \
 RUN wget -O /usr/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64 \
  && chmod +x /usr/bin/dumb-init
 
-FROM debian:stretch-slim
+FROM ubuntu
 
 
 RUN useradd -ms /bin/bash  www;\
