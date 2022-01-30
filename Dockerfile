@@ -1,8 +1,8 @@
-FROM ubuntu:xenial as builer
+FROM ubuntu:jammy as builer
 ENV TENGINE_VER 2.3.3
 
 
-
+COPY sources.list /etc/apt/sources.list
 COPY tengine-${TENGINE_VER}.tar.gz /opt
 
 RUN ls -al /opt
@@ -49,7 +49,7 @@ RUN   cd /opt/tengine-2.3.3; \
 RUN wget -O /usr/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64 \
  && chmod +x /usr/bin/dumb-init
 
-FROM ubuntu:xenial
+FROM ubuntu:jammy
 
 
 RUN useradd -ms /bin/bash  www;\
