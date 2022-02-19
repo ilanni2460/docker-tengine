@@ -3,11 +3,11 @@ ENV TENGINE_VER 2.3.3
 
 
 COPY sources.list /etc/apt/sources.list
-COPY tengine-${TENGINE_VER}.tar.gz /opt
+COPY tengine-${TENGINE_VER}.tar.gz /tmp/
 
-RUN ls -al /opt
+RUN ls -al /tmp/
 
-RUN    cd /opt; \
+RUN    cd /tmp/; \
     tar zxvf tengine-${TENGINE_VER}.tar.gz ;\
     cd tengine-${TENGINE_VER}; \
     ls -al 
@@ -20,7 +20,7 @@ RUN cat /etc/apt/sources.list; \
     apt-get install -y gcc make g++ wget libgoogle-perftools-dev vim-tiny libjemalloc-dev libxml2 libxml2-dev libxslt-dev libgd-dev; \
     apt-get build-dep nginx-full -y;  \
     apt-get build-dep libnginx-mod-http-image-filter -y;
-RUN   cd /opt/tengine-2.3.3; \
+RUN   cd /tmp/tengine-2.3.3; \
       ./configure --prefix=/usr/local/nginx \
       --sbin-path=/usr/local/nginx/sbin/nginx \
       --conf-path=/usr/local/nginx/etc/nginx.conf \
