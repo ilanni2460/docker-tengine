@@ -5,8 +5,6 @@ ENV TENGINE_VER 2.3.3
 COPY sources.list /etc/apt/sources.list
 COPY tengine-${TENGINE_VER}.tar.gz /tmp/
 
-RUN ls -al /tmp/
-
 RUN    cd /tmp/; \
     tar zxvf tengine-${TENGINE_VER}.tar.gz ;\
     cd tengine-${TENGINE_VER}; \
