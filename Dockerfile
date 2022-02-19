@@ -1,3 +1,26 @@
+FROM ubuntu:jammy as builer
+ENV TENGINE_VER 2.3.3
+
+
+COPY sources.list /etc/apt/sources.list
+COPY tengine-${TENGINE_VER}.tar.gz /opt
+
+RUN ls -al /opt
+
+RUN    cd /opt; \
+    tar zxvf tengine-${TENGINE_VER}.tar.gz ;\
+    cd tengine-${TENGINE_VER}; \
+    ls -al 
+
+RUN sed -i "/^# deb-src/ s/^# //" /etc/apt/sources.list
+
+RUN cat /etc/apt/sources.list; \
+    apt-get update ; \
+    apt-get dist-upgrade -y ; \
+    apt-get install -y gcc make g++ wget libgoogle-perftools-dev vim-tiny libjemalloc-dev libxml2 libxml2-dev libxslt-dev libgd-dev; \
+    apt-get build-dep nginx-full -y;  \
+    apt-get build-dep libnginx-mod-http-image-filter -y;
+RUN   cd /opt/tengine-2.3.3; \
       ./configure --prefix=/usr/local/nginx \
       --sbin-path=/usr/local/nginx/sbin/nginx \
       --conf-path=/usr/local/nginx/etc/nginx.conf \
@@ -71,3 +94,33 @@
       --add-module=modules/headers-more-nginx-module-0.33 \
       --add-module=modules/ngx_http_upstream_session_sticky_module \
       --add-module=./modules/ngx_http_proxy_connect_module ;\
+    make ; make install
+    
+
+RUN wget -O /usr/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64 \
+ && chmod +x /usr/bin/dumb-init
+
+FROM ubuntu:jammy
+
+
+RUN useradd -ms /bin/bash  www;\
+    rm -rf /var/lib/apt/lists/*;\
+    cd ..;\
+    rm -rf tengine-*; \
+    unlink ${TENGINE_VER}.tar.gz;
+ENV TERM xterm
+VOLUME ["/tmp/nginx"]
+
+ENV HOME /root
+ENV PATH="/usr/local/nginx/bin:/usr/local/nginx/sbin:${PATH}"
+WORKDIR /root
+COPY --from=builder /usr/local/nginx /usr/local/nginx
+COPY --from=builder /usr/bin/dumb-init /usr/bin/dumb-init
+
+COPY nginx.conf /usr/local/nginx/etc/nginx.conf
+
+
+
+ENTRYPOINT [ "/usr/bin/dumb-init" , "--" ]
+
+CMD ["/usr/local/nginx/sbin/nginx", "-g", "daemon off;"]
